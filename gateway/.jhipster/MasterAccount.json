@@ -1,0 +1,28 @@
+{
+  "name": "MasterAccount",
+  "fields": [
+    {
+      "fieldName": "customerID",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "initialCredit",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "relationships": [],
+  "changelogDate": "19700101000100",
+  "entityTableName": "accounts",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["gateway", "account"],
+  "jhiPrefix": "acc",
+  "microserviceName": "account"
+}

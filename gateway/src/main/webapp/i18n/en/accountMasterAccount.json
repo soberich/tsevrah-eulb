@@ -1,0 +1,27 @@
+{
+  "gatewayApp": {
+    "accountMasterAccount": {
+      "home": {
+        "title": "Master Accounts",
+        "createLabel": "Create a new Master Account",
+        "createOrEditLabel": "Create or edit a Master Account",
+        "notFound": "No Master Accounts found"
+      },
+      "delete": {
+        "question": "Are you sure you want to delete Master Account {{ id }}?"
+      },
+      "detail": {
+        "title": "Master Account"
+      },
+      "customerID": "Customer ID",
+      "initialCredit": "Initial Credit"
+    }
+  },
+  "accountApp": {
+    "accountMasterAccount": {
+      "created": "A new Master Account is created with identifier {{ param }}",
+      "updated": "A Master Account is updated with identifier {{ param }}",
+      "deleted": "A Master Account is deleted with identifier {{ param }}"
+    }
+  }
+}

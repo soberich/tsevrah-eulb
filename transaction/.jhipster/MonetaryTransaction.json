@@ -1,0 +1,45 @@
+{
+  "name": "MonetaryTransaction",
+  "fields": [
+    {
+      "fieldName": "recipientID",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "senderID",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "amount",
+      "fieldType": "BigDecimal",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "accountState",
+      "otherEntityRelationshipName": "transactions",
+      "relationshipValidateRules": "required",
+      "javadoc": "Issued transaction",
+      "relationshipName": "account",
+      "otherEntityField": "customerID"
+    }
+  ],
+  "changelogDate": "19700101000200",
+  "javadoc": "In first PR we assume transaction only when non-empty account created.\\nE.i. no other transactions going on in this design.\\nFor example, there is no currency included in this PR.",
+  "entityTableName": "transactions",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["gateway", "transaction"],
+  "jhiPrefix": "tr",
+  "microserviceName": "transaction"
+}

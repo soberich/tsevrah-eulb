@@ -1,0 +1,28 @@
+{
+  "gatewayApp": {
+    "transactionAccountState": {
+      "home": {
+        "title": "Account States",
+        "createLabel": "Create a new Account State",
+        "createOrEditLabel": "Create or edit a Account State",
+        "notFound": "No Account States found"
+      },
+      "delete": {
+        "question": "Are you sure you want to delete Account State {{ id }}?"
+      },
+      "detail": {
+        "title": "Account State"
+      },
+      "customerID": "Customer ID",
+      "balance": "Balance",
+      "transactions": "Transactions"
+    }
+  },
+  "transactionApp": {
+    "transactionAccountState": {
+      "created": "A new Account State is created with identifier {{ param }}",
+      "updated": "A Account State is updated with identifier {{ param }}",
+      "deleted": "A Account State is deleted with identifier {{ param }}"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "gatewayApp": {
+    "transactionMonetaryTransaction": {
+      "home": {
+        "title": "Monetary Transactions",
+        "createLabel": "Создать новый Monetary Transaction",
+        "createOrEditLabel": "Создать или отредактировать Monetary Transaction",
+        "notFound": "No Monetary Transactions found"
+      },
+      "delete": {
+        "question": "Вы уверены что хотите удалить Monetary Transaction {{ id }}?"
+      },
+      "detail": {
+        "title": "Monetary Transaction"
+      },
+      "recipientID": "Recipient ID",
+      "senderID": "Sender ID",
+      "amount": "Amount",
+      "account": "Account"
+    }
+  },
+  "transactionApp": {
+    "transactionMonetaryTransaction": {
+      "created": "Новый Monetary Transaction создан с идентификатором {{ param }}",
+      "updated": "Monetary Transaction обновлен с идентификатором {{ param }}",
+      "deleted": "Monetary Transaction удален с идентификатором {{ param }}"
+    }
+  }
+}

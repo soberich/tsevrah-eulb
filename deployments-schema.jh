@@ -1,0 +1,6 @@
+// will be created under 'docker-compose' folder
+deployment {
+    deploymentType docker-compose
+    dockerRepositoryName "ghcr.io/soberich/tsevrah-eulb"
+    appsFolders [gateway, account, transaction]
+}

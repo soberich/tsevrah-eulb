@@ -1,0 +1,29 @@
+{
+  "gatewayApp": {
+    "transactionMonetaryTransaction": {
+      "home": {
+        "title": "Monetary Transactions",
+        "createLabel": "Maak een nieuwe Monetary Transaction",
+        "createOrEditLabel": "Maak of wijzig een Monetary Transaction",
+        "notFound": "No Monetary Transactions found"
+      },
+      "delete": {
+        "question": "Bent u zeker dat u Monetary Transaction {{ id }} wilt verwijderen?"
+      },
+      "detail": {
+        "title": "Monetary Transaction"
+      },
+      "recipientID": "Recipient ID",
+      "senderID": "Sender ID",
+      "amount": "Amount",
+      "account": "Account"
+    }
+  },
+  "transactionApp": {
+    "transactionMonetaryTransaction": {
+      "created": "A new Monetary Transaction is created with identifier {{ param }}",
+      "updated": "A Monetary Transaction is updated with identifier {{ param }}",
+      "deleted": "A Monetary Transaction is deleted with identifier {{ param }}"
+    }
+  }
+}

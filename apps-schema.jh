@@ -1,0 +1,159 @@
+application {
+    config {
+        baseName gateway
+        applicationType gateway
+        packageName com.example.gateway
+        serviceDiscoveryType eureka
+        authenticationType jwt
+        prodDatabaseType postgresql
+        cacheProvider no
+        buildTool gradle
+        clientFramework react
+        useSass true,
+        //testFrameworks [ gatling ]
+
+
+        //blueprints [generator-jhipster-svelte]
+        reactive false
+        //clientThemeVariant dark
+        //entitySuffix Entity
+        enableHibernateCache false
+        databaseType sql
+        devDatabaseType h2Memory
+        enableTranslation true
+        nativeLanguage en,
+        languages [en, nl, ru]
+        clientPackageManager yarn
+        uaaBaseName "uaa",
+
+        //skipClient true
+        enableSwaggerCodegen true
+    }
+    entities *
+}
+
+application {
+    config {
+        //blueprints [generator-jhipster-svelte]
+        reactive false
+        //clientThemeVariant dark
+        //entitySuffix Entity
+        //testFrameworks [ gatling ]
+        applicationType microservice
+        baseName account
+        packageName com.example.account
+        authenticationType jwt
+        buildTool gradle
+        cacheProvider no
+        enableHibernateCache false
+        databaseType sql
+        prodDatabaseType postgresql
+        devDatabaseType h2Memory
+        enableTranslation true
+        nativeLanguage en,
+        languages [en, nl, ru]
+        clientFramework react
+        useSass true
+        clientPackageManager yarn
+        uaaBaseName "uaa",
+        serviceDiscoveryType eureka
+
+        //skipClient true
+        enableSwaggerCodegen true
+    }
+    entities MasterAccount
+}
+
+application {
+    config {
+        //blueprints [generator-jhipster-svelte]
+        reactive false
+        //clientThemeVariant dark
+        //entitySuffix Entity
+        //testFrameworks [ gatling ]
+        applicationType microservice
+        baseName transaction
+        packageName com.example.transaction
+        authenticationType jwt
+        buildTool gradle
+        cacheProvider no
+        enableHibernateCache false
+        databaseType sql
+        prodDatabaseType postgresql
+        devDatabaseType h2Memory
+        enableTranslation true
+        nativeLanguage en,
+        languages [en, nl, ru]
+        clientFramework react
+        useSass true
+        clientPackageManager yarn
+        uaaBaseName "uaa",
+        serviceDiscoveryType eureka
+
+        //skipClient true
+        enableSwaggerCodegen true
+    }
+    entities MonetaryTransaction, AccountState
+}
+
+@jhiPrefix(acc)
+@paginate(infinite-scroll)
+@service(serviceClass)
+entity MasterAccount(accounts) {
+    customerID Long required
+    initialCredit BigDecimal
+}
+
+/**
+ * In first PR we assume transaction only when non-empty account created.
+ * E.i. no other transactions going on in this design.
+ *      For example, there is no currency included in this PR.
+ */
+@jhiPrefix(tr)
+@paginate(infinite-scroll)
+@service(serviceClass)
+entity MonetaryTransaction(transactions) {
+    recipientID Long required
+    senderID Long required
+    amount BigDecimal required
+}
+
+@jhiPrefix(acc)
+@paginate(infinite-scroll)
+@readOnly
+@service(serviceClass)
+entity AccountState(accounts) {
+    customerID Long required
+    balance BigDecimal required
+}
+
+relationship OneToMany {
+    /** All transactions*/
+    AccountState{transactions}
+    to
+    /** Issued transaction*/
+    MonetaryTransaction  {account(customerID) required}
+
+}
+
+//relationship OneToOne {
+//    /** Issued transaction*/
+//    MonetaryTransaction  {from}
+//    to
+//    /** Owning User / Admin of this account*/
+//    MasterAccount
+//
+//    /** Issued transaction*/
+//    MonetaryTransaction  {to}
+//    to
+//    /** Owning User / Admin of this account*/
+//    MasterAccount
+//}
+
+//experimental true
+
+microservice MonetaryTransaction, AccountState with transaction
+microservice MasterAccount with account
+
+service all with serviceClass
+dto all with mapstruct
