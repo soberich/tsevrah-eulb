@@ -7,20 +7,20 @@ import { Translate, translate, ICrudGetAction, ICrudGetAllAction, ICrudPutAction
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
-import { getEntity, updateEntity, createEntity, reset } from './master-account.reducer';
-import { IMasterAccount } from 'app/shared/model/account/master-account.model';
+import { getEntity, updateEntity, createEntity, reset } from './account-application.reducer';
+import { IAccountApplication } from 'app/shared/model/account/account-application.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import { mapIdList } from 'app/shared/util/entity-utils';
 
-export interface IMasterAccountUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
+export interface IAccountApplicationUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
-export const MasterAccountUpdate = (props: IMasterAccountUpdateProps) => {
+export const AccountApplicationUpdate = (props: IAccountApplicationUpdateProps) => {
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
 
-  const { masterAccountEntity, loading, updating } = props;
+  const { accountApplicationEntity, loading, updating } = props;
 
   const handleClose = () => {
-    props.history.push('/master-account');
+    props.history.push('/account-application');
   };
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const MasterAccountUpdate = (props: IMasterAccountUpdateProps) => {
   const saveEntity = (event, errors, values) => {
     if (errors.length === 0) {
       const entity = {
-        ...masterAccountEntity,
+        ...accountApplicationEntity,
         ...values,
       };
 
@@ -54,8 +54,10 @@ export const MasterAccountUpdate = (props: IMasterAccountUpdateProps) => {
     <div>
       <Row className="justify-content-center">
         <Col md="8">
-          <h2 id="gatewayApp.accountMasterAccount.home.createOrEditLabel">
-            <Translate contentKey="gatewayApp.accountMasterAccount.home.createOrEditLabel">Create or edit a MasterAccount</Translate>
+          <h2 id="gatewayApp.accountAccountApplication.home.createOrEditLabel">
+            <Translate contentKey="gatewayApp.accountAccountApplication.home.createOrEditLabel">
+              Create or edit a AccountApplication
+            </Translate>
           </h2>
         </Col>
       </Row>
@@ -64,21 +66,21 @@ export const MasterAccountUpdate = (props: IMasterAccountUpdateProps) => {
           {loading ? (
             <p>Loading...</p>
           ) : (
-            <AvForm model={isNew ? {} : masterAccountEntity} onSubmit={saveEntity}>
+            <AvForm model={isNew ? {} : accountApplicationEntity} onSubmit={saveEntity}>
               {!isNew ? (
                 <AvGroup>
-                  <Label for="master-account-id">
+                  <Label for="account-application-id">
                     <Translate contentKey="global.field.id">ID</Translate>
                   </Label>
-                  <AvInput id="master-account-id" type="text" className="form-control" name="id" required readOnly />
+                  <AvInput id="account-application-id" type="text" className="form-control" name="id" required readOnly />
                 </AvGroup>
               ) : null}
               <AvGroup>
-                <Label id="customerIDLabel" for="master-account-customerID">
-                  <Translate contentKey="gatewayApp.accountMasterAccount.customerID">Customer ID</Translate>
+                <Label id="customerIDLabel" for="account-application-customerID">
+                  <Translate contentKey="gatewayApp.accountAccountApplication.customerID">Customer ID</Translate>
                 </Label>
                 <AvField
-                  id="master-account-customerID"
+                  id="account-application-customerID"
                   type="string"
                   className="form-control"
                   name="customerID"
@@ -89,12 +91,12 @@ export const MasterAccountUpdate = (props: IMasterAccountUpdateProps) => {
                 />
               </AvGroup>
               <AvGroup>
-                <Label id="initialCreditLabel" for="master-account-initialCredit">
-                  <Translate contentKey="gatewayApp.accountMasterAccount.initialCredit">Initial Credit</Translate>
+                <Label id="initialCreditLabel" for="account-application-initialCredit">
+                  <Translate contentKey="gatewayApp.accountAccountApplication.initialCredit">Initial Credit</Translate>
                 </Label>
-                <AvField id="master-account-initialCredit" type="text" name="initialCredit" />
+                <AvField id="account-application-initialCredit" type="text" name="initialCredit" />
               </AvGroup>
-              <Button tag={Link} id="cancel-save" to="/master-account" replace color="info">
+              <Button tag={Link} id="cancel-save" to="/account-application" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;
                 <span className="d-none d-md-inline">
@@ -116,10 +118,10 @@ export const MasterAccountUpdate = (props: IMasterAccountUpdateProps) => {
 };
 
 const mapStateToProps = (storeState: IRootState) => ({
-  masterAccountEntity: storeState.masterAccount.entity,
-  loading: storeState.masterAccount.loading,
-  updating: storeState.masterAccount.updating,
-  updateSuccess: storeState.masterAccount.updateSuccess,
+  accountApplicationEntity: storeState.accountApplication.entity,
+  loading: storeState.accountApplication.loading,
+  updating: storeState.accountApplication.updating,
+  updateSuccess: storeState.accountApplication.updateSuccess,
 });
 
 const mapDispatchToProps = {
@@ -132,4 +134,4 @@ const mapDispatchToProps = {
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(mapStateToProps, mapDispatchToProps)(MasterAccountUpdate);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountApplicationUpdate);

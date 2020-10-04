@@ -5,19 +5,19 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import { Translate, ICrudGetAction, ICrudDeleteAction } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { IMasterAccount } from 'app/shared/model/account/master-account.model';
+import { IAccountApplication } from 'app/shared/model/account/account-application.model';
 import { IRootState } from 'app/shared/reducers';
-import { getEntity, deleteEntity } from './master-account.reducer';
+import { getEntity, deleteEntity } from './account-application.reducer';
 
-export interface IMasterAccountDeleteDialogProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
+export interface IAccountApplicationDeleteDialogProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
-export const MasterAccountDeleteDialog = (props: IMasterAccountDeleteDialogProps) => {
+export const AccountApplicationDeleteDialog = (props: IAccountApplicationDeleteDialogProps) => {
   useEffect(() => {
     props.getEntity(props.match.params.id);
   }, []);
 
   const handleClose = () => {
-    props.history.push('/master-account');
+    props.history.push('/account-application');
   };
 
   useEffect(() => {
@@ -27,18 +27,18 @@ export const MasterAccountDeleteDialog = (props: IMasterAccountDeleteDialogProps
   }, [props.updateSuccess]);
 
   const confirmDelete = () => {
-    props.deleteEntity(props.masterAccountEntity.id);
+    props.deleteEntity(props.accountApplicationEntity.id);
   };
 
-  const { masterAccountEntity } = props;
+  const { accountApplicationEntity } = props;
   return (
     <Modal isOpen toggle={handleClose}>
       <ModalHeader toggle={handleClose}>
         <Translate contentKey="entity.delete.title">Confirm delete operation</Translate>
       </ModalHeader>
-      <ModalBody id="gatewayApp.accountMasterAccount.delete.question">
-        <Translate contentKey="gatewayApp.accountMasterAccount.delete.question" interpolate={{ id: masterAccountEntity.id }}>
-          Are you sure you want to delete this MasterAccount?
+      <ModalBody id="gatewayApp.accountAccountApplication.delete.question">
+        <Translate contentKey="gatewayApp.accountAccountApplication.delete.question" interpolate={{ id: accountApplicationEntity.id }}>
+          Are you sure you want to delete this AccountApplication?
         </Translate>
       </ModalBody>
       <ModalFooter>
@@ -47,7 +47,7 @@ export const MasterAccountDeleteDialog = (props: IMasterAccountDeleteDialogProps
           &nbsp;
           <Translate contentKey="entity.action.cancel">Cancel</Translate>
         </Button>
-        <Button id="jhi-confirm-delete-masterAccount" color="danger" onClick={confirmDelete}>
+        <Button id="jhi-confirm-delete-accountApplication" color="danger" onClick={confirmDelete}>
           <FontAwesomeIcon icon="trash" />
           &nbsp;
           <Translate contentKey="entity.action.delete">Delete</Translate>
@@ -57,9 +57,9 @@ export const MasterAccountDeleteDialog = (props: IMasterAccountDeleteDialogProps
   );
 };
 
-const mapStateToProps = ({ masterAccount }: IRootState) => ({
-  masterAccountEntity: masterAccount.entity,
-  updateSuccess: masterAccount.updateSuccess,
+const mapStateToProps = ({ accountApplication }: IRootState) => ({
+  accountApplicationEntity: accountApplication.entity,
+  updateSuccess: accountApplication.updateSuccess,
 });
 
 const mapDispatchToProps = { getEntity, deleteEntity };
@@ -67,4 +67,4 @@ const mapDispatchToProps = { getEntity, deleteEntity };
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(mapStateToProps, mapDispatchToProps)(MasterAccountDeleteDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountApplicationDeleteDialog);

@@ -14,9 +14,9 @@ import reducer, {
   getEntity,
   updateEntity,
   reset,
-} from 'app/entities/account/master-account/master-account.reducer';
+} from 'app/entities/account/account-application/account-application.reducer';
 import { REQUEST, SUCCESS, FAILURE } from 'app/shared/reducers/action-type.util';
-import { IMasterAccount, defaultValue } from 'app/shared/model/account/master-account.model';
+import { IAccountApplication, defaultValue } from 'app/shared/model/account/account-application.model';
 
 describe('Entities reducer tests', () => {
   function isEmpty(element): boolean {
@@ -30,7 +30,7 @@ describe('Entities reducer tests', () => {
   const initialState = {
     loading: false,
     errorMessage: null,
-    entities: [] as ReadonlyArray<IMasterAccount>,
+    entities: [] as ReadonlyArray<IAccountApplication>,
     entity: defaultValue,
     links: {
       next: 0,
@@ -65,21 +65,25 @@ describe('Entities reducer tests', () => {
 
   describe('Requests', () => {
     it('should set state to loading', () => {
-      testMultipleTypes([REQUEST(ACTION_TYPES.FETCH_MASTERACCOUNT_LIST), REQUEST(ACTION_TYPES.FETCH_MASTERACCOUNT)], {}, state => {
-        expect(state).toMatchObject({
-          errorMessage: null,
-          updateSuccess: false,
-          loading: true,
-        });
-      });
+      testMultipleTypes(
+        [REQUEST(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION_LIST), REQUEST(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION)],
+        {},
+        state => {
+          expect(state).toMatchObject({
+            errorMessage: null,
+            updateSuccess: false,
+            loading: true,
+          });
+        }
+      );
     });
 
     it('should set state to updating', () => {
       testMultipleTypes(
         [
-          REQUEST(ACTION_TYPES.CREATE_MASTERACCOUNT),
-          REQUEST(ACTION_TYPES.UPDATE_MASTERACCOUNT),
-          REQUEST(ACTION_TYPES.DELETE_MASTERACCOUNT),
+          REQUEST(ACTION_TYPES.CREATE_ACCOUNTAPPLICATION),
+          REQUEST(ACTION_TYPES.UPDATE_ACCOUNTAPPLICATION),
+          REQUEST(ACTION_TYPES.DELETE_ACCOUNTAPPLICATION),
         ],
         {},
         state => {
@@ -110,11 +114,11 @@ describe('Entities reducer tests', () => {
     it('should set a message in errorMessage', () => {
       testMultipleTypes(
         [
-          FAILURE(ACTION_TYPES.FETCH_MASTERACCOUNT_LIST),
-          FAILURE(ACTION_TYPES.FETCH_MASTERACCOUNT),
-          FAILURE(ACTION_TYPES.CREATE_MASTERACCOUNT),
-          FAILURE(ACTION_TYPES.UPDATE_MASTERACCOUNT),
-          FAILURE(ACTION_TYPES.DELETE_MASTERACCOUNT),
+          FAILURE(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION_LIST),
+          FAILURE(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION),
+          FAILURE(ACTION_TYPES.CREATE_ACCOUNTAPPLICATION),
+          FAILURE(ACTION_TYPES.UPDATE_ACCOUNTAPPLICATION),
+          FAILURE(ACTION_TYPES.DELETE_ACCOUNTAPPLICATION),
         ],
         'error message',
         state => {
@@ -134,7 +138,7 @@ describe('Entities reducer tests', () => {
       const links = parseHeaderForLinks(payload.headers.link);
       expect(
         reducer(undefined, {
-          type: SUCCESS(ACTION_TYPES.FETCH_MASTERACCOUNT_LIST),
+          type: SUCCESS(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION_LIST),
           payload,
         })
       ).toEqual({
@@ -150,7 +154,7 @@ describe('Entities reducer tests', () => {
       const payload = { data: { 1: 'fake1' } };
       expect(
         reducer(undefined, {
-          type: SUCCESS(ACTION_TYPES.FETCH_MASTERACCOUNT),
+          type: SUCCESS(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION),
           payload,
         })
       ).toEqual({
@@ -164,7 +168,7 @@ describe('Entities reducer tests', () => {
       const payload = { data: 'fake payload' };
       expect(
         reducer(undefined, {
-          type: SUCCESS(ACTION_TYPES.CREATE_MASTERACCOUNT),
+          type: SUCCESS(ACTION_TYPES.CREATE_ACCOUNTAPPLICATION),
           payload,
         })
       ).toEqual({
@@ -178,7 +182,7 @@ describe('Entities reducer tests', () => {
     it('should delete entity', () => {
       const payload = 'fake payload';
       const toTest = reducer(undefined, {
-        type: SUCCESS(ACTION_TYPES.DELETE_MASTERACCOUNT),
+        type: SUCCESS(ACTION_TYPES.DELETE_ACCOUNTAPPLICATION),
         payload,
       });
       expect(toTest).toMatchObject({
@@ -201,65 +205,65 @@ describe('Entities reducer tests', () => {
       axios.delete = sinon.stub().returns(Promise.resolve(resolvedObject));
     });
 
-    it('dispatches ACTION_TYPES.FETCH_MASTERACCOUNT_LIST actions', async () => {
+    it('dispatches ACTION_TYPES.FETCH_ACCOUNTAPPLICATION_LIST actions', async () => {
       const expectedActions = [
         {
-          type: REQUEST(ACTION_TYPES.FETCH_MASTERACCOUNT_LIST),
+          type: REQUEST(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION_LIST),
         },
         {
-          type: SUCCESS(ACTION_TYPES.FETCH_MASTERACCOUNT_LIST),
+          type: SUCCESS(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION_LIST),
           payload: resolvedObject,
         },
       ];
       await store.dispatch(getEntities()).then(() => expect(store.getActions()).toEqual(expectedActions));
     });
 
-    it('dispatches ACTION_TYPES.FETCH_MASTERACCOUNT actions', async () => {
+    it('dispatches ACTION_TYPES.FETCH_ACCOUNTAPPLICATION actions', async () => {
       const expectedActions = [
         {
-          type: REQUEST(ACTION_TYPES.FETCH_MASTERACCOUNT),
+          type: REQUEST(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION),
         },
         {
-          type: SUCCESS(ACTION_TYPES.FETCH_MASTERACCOUNT),
+          type: SUCCESS(ACTION_TYPES.FETCH_ACCOUNTAPPLICATION),
           payload: resolvedObject,
         },
       ];
       await store.dispatch(getEntity(42666)).then(() => expect(store.getActions()).toEqual(expectedActions));
     });
 
-    it('dispatches ACTION_TYPES.CREATE_MASTERACCOUNT actions', async () => {
+    it('dispatches ACTION_TYPES.CREATE_ACCOUNTAPPLICATION actions', async () => {
       const expectedActions = [
         {
-          type: REQUEST(ACTION_TYPES.CREATE_MASTERACCOUNT),
+          type: REQUEST(ACTION_TYPES.CREATE_ACCOUNTAPPLICATION),
         },
         {
-          type: SUCCESS(ACTION_TYPES.CREATE_MASTERACCOUNT),
+          type: SUCCESS(ACTION_TYPES.CREATE_ACCOUNTAPPLICATION),
           payload: resolvedObject,
         },
       ];
       await store.dispatch(createEntity({ id: 1 })).then(() => expect(store.getActions()).toEqual(expectedActions));
     });
 
-    it('dispatches ACTION_TYPES.UPDATE_MASTERACCOUNT actions', async () => {
+    it('dispatches ACTION_TYPES.UPDATE_ACCOUNTAPPLICATION actions', async () => {
       const expectedActions = [
         {
-          type: REQUEST(ACTION_TYPES.UPDATE_MASTERACCOUNT),
+          type: REQUEST(ACTION_TYPES.UPDATE_ACCOUNTAPPLICATION),
         },
         {
-          type: SUCCESS(ACTION_TYPES.UPDATE_MASTERACCOUNT),
+          type: SUCCESS(ACTION_TYPES.UPDATE_ACCOUNTAPPLICATION),
           payload: resolvedObject,
         },
       ];
       await store.dispatch(updateEntity({ id: 1 })).then(() => expect(store.getActions()).toEqual(expectedActions));
     });
 
-    it('dispatches ACTION_TYPES.DELETE_MASTERACCOUNT actions', async () => {
+    it('dispatches ACTION_TYPES.DELETE_ACCOUNTAPPLICATION actions', async () => {
       const expectedActions = [
         {
-          type: REQUEST(ACTION_TYPES.DELETE_MASTERACCOUNT),
+          type: REQUEST(ACTION_TYPES.DELETE_ACCOUNTAPPLICATION),
         },
         {
-          type: SUCCESS(ACTION_TYPES.DELETE_MASTERACCOUNT),
+          type: SUCCESS(ACTION_TYPES.DELETE_ACCOUNTAPPLICATION),
           payload: resolvedObject,
         },
       ];

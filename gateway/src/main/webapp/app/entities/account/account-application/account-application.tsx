@@ -7,15 +7,15 @@ import { Translate, ICrudGetAllAction, getSortState, IPaginationBaseState } from
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { IRootState } from 'app/shared/reducers';
-import { getEntities, reset } from './master-account.reducer';
-import { IMasterAccount } from 'app/shared/model/account/master-account.model';
+import { getEntities, reset } from './account-application.reducer';
+import { IAccountApplication } from 'app/shared/model/account/account-application.model';
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ITEMS_PER_PAGE } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 
-export interface IMasterAccountProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
+export interface IAccountApplicationProps extends StateProps, DispatchProps, RouteComponentProps<{ url: string }> {}
 
-export const MasterAccount = (props: IMasterAccountProps) => {
+export const AccountApplication = (props: IAccountApplicationProps) => {
   const [paginationState, setPaginationState] = useState(
     overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE), props.location.search)
   );
@@ -75,15 +75,15 @@ export const MasterAccount = (props: IMasterAccountProps) => {
     setSorting(true);
   };
 
-  const { masterAccountList, match, loading } = props;
+  const { accountApplicationList, match, loading } = props;
   return (
     <div>
-      <h2 id="master-account-heading">
-        <Translate contentKey="gatewayApp.accountMasterAccount.home.title">Master Accounts</Translate>
+      <h2 id="account-application-heading">
+        <Translate contentKey="gatewayApp.accountAccountApplication.home.title">Account Applications</Translate>
         <Link to={`${match.url}/new`} className="btn btn-primary float-right jh-create-entity" id="jh-create-entity">
           <FontAwesomeIcon icon="plus" />
           &nbsp;
-          <Translate contentKey="gatewayApp.accountMasterAccount.home.createLabel">Create new Master Account</Translate>
+          <Translate contentKey="gatewayApp.accountAccountApplication.home.createLabel">Create new Account Application</Translate>
         </Link>
       </h2>
       <div className="table-responsive">
@@ -95,7 +95,7 @@ export const MasterAccount = (props: IMasterAccountProps) => {
           threshold={0}
           initialLoad={false}
         >
-          {masterAccountList && masterAccountList.length > 0 ? (
+          {accountApplicationList && accountApplicationList.length > 0 ? (
             <Table responsive>
               <thead>
                 <tr>
@@ -103,41 +103,41 @@ export const MasterAccount = (props: IMasterAccountProps) => {
                     <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th className="hand" onClick={sort('customerID')}>
-                    <Translate contentKey="gatewayApp.accountMasterAccount.customerID">Customer ID</Translate>{' '}
+                    <Translate contentKey="gatewayApp.accountAccountApplication.customerID">Customer ID</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
                   <th className="hand" onClick={sort('initialCredit')}>
-                    <Translate contentKey="gatewayApp.accountMasterAccount.initialCredit">Initial Credit</Translate>{' '}
+                    <Translate contentKey="gatewayApp.accountAccountApplication.initialCredit">Initial Credit</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {masterAccountList.map((masterAccount, i) => (
+                {accountApplicationList.map((accountApplication, i) => (
                   <tr key={`entity-${i}`}>
                     <td>
-                      <Button tag={Link} to={`${match.url}/${masterAccount.id}`} color="link" size="sm">
-                        {masterAccount.id}
+                      <Button tag={Link} to={`${match.url}/${accountApplication.id}`} color="link" size="sm">
+                        {accountApplication.id}
                       </Button>
                     </td>
-                    <td>{masterAccount.customerID}</td>
-                    <td>{masterAccount.initialCredit}</td>
+                    <td>{accountApplication.customerID}</td>
+                    <td>{accountApplication.initialCredit}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
-                        <Button tag={Link} to={`${match.url}/${masterAccount.id}`} color="info" size="sm">
+                        <Button tag={Link} to={`${match.url}/${accountApplication.id}`} color="info" size="sm">
                           <FontAwesomeIcon icon="eye" />{' '}
                           <span className="d-none d-md-inline">
                             <Translate contentKey="entity.action.view">View</Translate>
                           </span>
                         </Button>
-                        <Button tag={Link} to={`${match.url}/${masterAccount.id}/edit`} color="primary" size="sm">
+                        <Button tag={Link} to={`${match.url}/${accountApplication.id}/edit`} color="primary" size="sm">
                           <FontAwesomeIcon icon="pencil-alt" />{' '}
                           <span className="d-none d-md-inline">
                             <Translate contentKey="entity.action.edit">Edit</Translate>
                           </span>
                         </Button>
-                        <Button tag={Link} to={`${match.url}/${masterAccount.id}/delete`} color="danger" size="sm">
+                        <Button tag={Link} to={`${match.url}/${accountApplication.id}/delete`} color="danger" size="sm">
                           <FontAwesomeIcon icon="trash" />{' '}
                           <span className="d-none d-md-inline">
                             <Translate contentKey="entity.action.delete">Delete</Translate>
@@ -152,7 +152,7 @@ export const MasterAccount = (props: IMasterAccountProps) => {
           ) : (
             !loading && (
               <div className="alert alert-warning">
-                <Translate contentKey="gatewayApp.accountMasterAccount.home.notFound">No Master Accounts found</Translate>
+                <Translate contentKey="gatewayApp.accountAccountApplication.home.notFound">No Account Applications found</Translate>
               </div>
             )
           )}
@@ -162,13 +162,13 @@ export const MasterAccount = (props: IMasterAccountProps) => {
   );
 };
 
-const mapStateToProps = ({ masterAccount }: IRootState) => ({
-  masterAccountList: masterAccount.entities,
-  loading: masterAccount.loading,
-  totalItems: masterAccount.totalItems,
-  links: masterAccount.links,
-  entity: masterAccount.entity,
-  updateSuccess: masterAccount.updateSuccess,
+const mapStateToProps = ({ accountApplication }: IRootState) => ({
+  accountApplicationList: accountApplication.entities,
+  loading: accountApplication.loading,
+  totalItems: accountApplication.totalItems,
+  links: accountApplication.links,
+  entity: accountApplication.entity,
+  updateSuccess: accountApplication.updateSuccess,
 });
 
 const mapDispatchToProps = {
@@ -179,4 +179,4 @@ const mapDispatchToProps = {
 type StateProps = ReturnType<typeof mapStateToProps>;
 type DispatchProps = typeof mapDispatchToProps;
 
-export default connect(mapStateToProps, mapDispatchToProps)(MasterAccount);
+export default connect(mapStateToProps, mapDispatchToProps)(AccountApplication);

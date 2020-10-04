@@ -30,11 +30,11 @@
     "clientPackageManager": "yarn",
     "uaaBaseName": "uaa",
     "jhipsterVersion": "6.10.3",
-    "creationTimestamp": 1601832600692,
+    "creationTimestamp": 1601835420044,
     "skipServer": false,
     "clientTheme": "none",
     "clientThemeVariant": "",
-    "jwtSecretKey": "MmJmODg3MWY4M2IwYzY0NmE5MzVmMDVjM2ZkMWMxOGEzZmMzNTc3YWJkNGI1ZjMwNjhiNWE0YjgyOTYyYjZlN2MwMzcwZGUyN2UxNjVlOWYyMzg1NzA4YzY5MGQ4MTA3YzIxOWVjMGEyZTc4YTI5NzI2YTMwMTk0NmMyNThjMmU=",
+    "jwtSecretKey": "MzA3NjZmMTMyZGEyNGJmODZjZjc5NTEyMThhNmEwMTJhYmNlYmY1YTllYjhiMDA5ZGNhNWRhZWI4NjkyMjY0OTdjZDcwMjVmNDMyYTU3YmYzMGIxN2Y5NTlkNWUzNzY4MGEyZDQxYmY3OTc5NmRkZjlhODc5ZDc3OWViNTNhYWM=",
     "embeddableLaunchScript": false,
     "entitySuffix": "",
     "dtoSuffix": "DTO",
@@ -42,5 +42,5 @@
     "blueprints": [],
     "prettierJava": true
   },
-  "entities": ["MasterAccount", "MonetaryTransaction", "AccountState"]
+  "entities": ["AccountApplication", "MonetaryTransaction", "AccountState"]
 }

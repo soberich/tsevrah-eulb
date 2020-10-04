@@ -28,8 +28,8 @@
     "clientPackageManager": "yarn",
     "uaaBaseName": "uaa",
     "jhipsterVersion": "6.10.3",
-    "creationTimestamp": 1601832600692,
-    "jwtSecretKey": "YmJiZjc2Yzg5ZmEwYjg1ZjQxZDQwMmE0NTk0ODRjNDFkZTM3OTNjYjAxZjVkYmQ5ZjU0MDY4ZmQ1MWVkNzg2ZGViZDQ2MWM2OGZjMTZkOTExNTUyMmRkNmVjYmRiZDU4MTA3MWM4ZDQwMjkyOGViMWVjOTIyZDkzYzU3MGEyNWY=",
+    "creationTimestamp": 1601835420044,
+    "jwtSecretKey": "NTYzNDBlNTdjOWY3NjUyNjUyNTYzNDEyNGY1ODQ3YjRjZWExOTFiMjUxZTFkYTRjODNkOTg3YTY5NDZiYzM4MDA5MzViOTBlMzlmYTUyZmRkM2MwNTVhODlmMjhiMWRiMGI4YzkwODZhZTIwMzVkYTFjYjk4NzQ0Y2ZmNjcyNmQ=",
     "embeddableLaunchScript": false,
     "entitySuffix": "",
     "dtoSuffix": "DTO",
@@ -37,5 +37,5 @@
     "blueprints": [],
     "prettierJava": true
   },
-  "entities": ["MasterAccount"]
+  "entities": ["AccountApplication"]
 }

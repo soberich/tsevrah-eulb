@@ -61,7 +61,7 @@ application {
         //skipClient true
         enableSwaggerCodegen true
     }
-    entities MasterAccount
+    entities AccountApplication
 }
 
 application {
@@ -99,7 +99,7 @@ application {
 @jhiPrefix(acc)
 @paginate(infinite-scroll)
 @service(serviceClass)
-entity MasterAccount(accounts) {
+entity AccountApplication(accounts) {
     customerID Long required
     initialCredit BigDecimal
 }
@@ -141,19 +141,19 @@ relationship OneToMany {
 //    MonetaryTransaction  {from}
 //    to
 //    /** Owning User / Admin of this account*/
-//    MasterAccount
+//    AccountApplication
 //
 //    /** Issued transaction*/
 //    MonetaryTransaction  {to}
 //    to
 //    /** Owning User / Admin of this account*/
-//    MasterAccount
+//    AccountApplication
 //}
 
 //experimental true
 
 microservice MonetaryTransaction, AccountState with transaction
-microservice MasterAccount with account
+microservice AccountApplication with account
 
 service all with serviceClass
 dto all with mapstruct
