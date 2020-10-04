@@ -1,0 +1,15 @@
+{
+  "generator-jhipster": {
+    "deploymentType": "docker-compose",
+    "gatewayType": "zuul",
+    "monitoring": "no",
+    "directoryPath": "../",
+    "appsFolders": ["gateway", "account", "transaction"],
+    "clusteredDbApps": [],
+    "consoleOptions": [],
+    "serviceDiscoveryType": "eureka",
+    "dockerRepositoryName": "ghcr.io/soberich/tsevrah-eulb",
+    "dockerPushCommand": "docker push",
+    "jwtSecretKey": "ZmY0Njg1MmFiNTI2ZThkZTEwMmE5NzQyZTQwNTZkMzhmNDg2OGNmMDA5NmMwY2Y2ODc3MDg1ZDQ4ZWE2ZDgxMGRjZDA5MzM4ZTFjNWM2NDc5Mzg1ZWQ3NTI4ZjU1MDVkZmJiYQ=="
+  }
+}
