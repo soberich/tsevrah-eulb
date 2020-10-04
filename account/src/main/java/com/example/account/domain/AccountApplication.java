@@ -1,7 +1,6 @@
 package com.example.account.domain;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -21,9 +20,6 @@ public class AccountApplication implements Serializable {
     @NotNull
     @Column(name = "customer_id", nullable = false)
     private Long customerID;
-
-    @Column(name = "initial_credit", precision = 21, scale = 2)
-    private BigDecimal initialCredit;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -46,20 +42,6 @@ public class AccountApplication implements Serializable {
     public void setCustomerID(Long customerID) {
         this.customerID = customerID;
     }
-
-    public BigDecimal getInitialCredit() {
-        return initialCredit;
-    }
-
-    public AccountApplication initialCredit(BigDecimal initialCredit) {
-        this.initialCredit = initialCredit;
-        return this;
-    }
-
-    public void setInitialCredit(BigDecimal initialCredit) {
-        this.initialCredit = initialCredit;
-    }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -84,7 +66,6 @@ public class AccountApplication implements Serializable {
         return "AccountApplication{" +
             "id=" + getId() +
             ", customerID=" + getCustomerID() +
-            ", initialCredit=" + getInitialCredit() +
             "}";
     }
 }

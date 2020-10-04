@@ -5,10 +5,6 @@
       "fieldName": "customerID",
       "fieldType": "Long",
       "fieldValidateRules": ["required"]
-    },
-    {
-      "fieldName": "initialCredit",
-      "fieldType": "BigDecimal"
     }
   ],
   "relationships": [],
