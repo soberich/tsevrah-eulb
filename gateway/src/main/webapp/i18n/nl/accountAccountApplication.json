@@ -1,0 +1,27 @@
+{
+  "gatewayApp": {
+    "accountAccountApplication": {
+      "home": {
+        "title": "Account Applications",
+        "createLabel": "Maak een nieuwe Account Application",
+        "createOrEditLabel": "Maak of wijzig een Account Application",
+        "notFound": "No Account Applications found"
+      },
+      "delete": {
+        "question": "Bent u zeker dat u Account Application {{ id }} wilt verwijderen?"
+      },
+      "detail": {
+        "title": "Account Application"
+      },
+      "customerID": "Customer ID",
+      "initialCredit": "Initial Credit"
+    }
+  },
+  "accountApp": {
+    "accountAccountApplication": {
+      "created": "A new Account Application is created with identifier {{ param }}",
+      "updated": "A Account Application is updated with identifier {{ param }}",
+      "deleted": "A Account Application is deleted with identifier {{ param }}"
+    }
+  }
+}

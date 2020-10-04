@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 import javax.validation.constraints.*;
 
 /**
- * A DTO for the {@link com.example.account.domain.MasterAccount} entity.
+ * A DTO for the {@link com.example.account.domain.AccountApplication} entity.
  */
-public class MasterAccountDTO implements Serializable {
+public class AccountApplicationDTO implements Serializable {
     private Long id;
 
     @NotNull
@@ -44,11 +44,11 @@ public class MasterAccountDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MasterAccountDTO)) {
+        if (!(o instanceof AccountApplicationDTO)) {
             return false;
         }
 
-        return id != null && id.equals(((MasterAccountDTO) o).id);
+        return id != null && id.equals(((AccountApplicationDTO) o).id);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MasterAccountDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "MasterAccountDTO{" +
+        return "AccountApplicationDTO{" +
             "id=" + getId() +
             ", customerID=" + getCustomerID() +
             ", initialCredit=" + getInitialCredit() +

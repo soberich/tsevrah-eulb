@@ -6,11 +6,11 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 /**
- * A MasterAccount.
+ * A AccountApplication.
  */
 @Entity
 @Table(name = "accounts")
-public class MasterAccount implements Serializable {
+public class AccountApplication implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -38,7 +38,7 @@ public class MasterAccount implements Serializable {
         return customerID;
     }
 
-    public MasterAccount customerID(Long customerID) {
+    public AccountApplication customerID(Long customerID) {
         this.customerID = customerID;
         return this;
     }
@@ -51,7 +51,7 @@ public class MasterAccount implements Serializable {
         return initialCredit;
     }
 
-    public MasterAccount initialCredit(BigDecimal initialCredit) {
+    public AccountApplication initialCredit(BigDecimal initialCredit) {
         this.initialCredit = initialCredit;
         return this;
     }
@@ -67,10 +67,10 @@ public class MasterAccount implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MasterAccount)) {
+        if (!(o instanceof AccountApplication)) {
             return false;
         }
-        return id != null && id.equals(((MasterAccount) o).id);
+        return id != null && id.equals(((AccountApplication) o).id);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class MasterAccount implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "MasterAccount{" +
+        return "AccountApplication{" +
             "id=" + getId() +
             ", customerID=" + getCustomerID() +
             ", initialCredit=" + getInitialCredit() +

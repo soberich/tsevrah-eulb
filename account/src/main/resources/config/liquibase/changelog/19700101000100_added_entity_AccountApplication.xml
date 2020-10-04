@@ -8,7 +8,7 @@
 
     
     <!--
-        Added the entity MasterAccount.
+        Added the entity AccountApplication.
     -->
     <changeSet id="19700101000100-1" author="jhipster">
         <createTable tableName="accounts">
