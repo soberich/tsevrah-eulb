@@ -3,15 +3,15 @@ package com.example.account.service.dto;
 import java.math.BigDecimal;
 import java.util.*;
 
-public class CustomerDetails {
+public class CustomerDetailedView {
 
     private final Long customerID;
     private final String name;
     private final String surname;
     private final BigDecimal balance;
-    private final List<AccountTransaction> transactions;
+    private final List<TransactionView> transactions;
 
-    public CustomerDetails(Long customerID, String name, String surname, BigDecimal balance, List<AccountTransaction> transactions) {
+    public CustomerDetailedView(Long customerID, String name, String surname, BigDecimal balance, List<TransactionView> transactions) {
         this.customerID = customerID;
         this.name = name;
         this.surname = surname;
@@ -35,7 +35,7 @@ public class CustomerDetails {
         return balance;
     }
 
-    public List<AccountTransaction> getTransactions() {
+    public List<TransactionView> getTransactions() {
         return transactions;
     }
 }

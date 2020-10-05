@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 
 import java.math.BigDecimal;
 
-public class AccountTransaction {
+public class TransactionView {
 
     @JsonAlias("accountCustomerID")
     private final Long customerID;
@@ -12,7 +12,7 @@ public class AccountTransaction {
     private final Long accountID;
     private final BigDecimal amount;
 
-    public AccountTransaction(Long customerID, Long accountID, BigDecimal amount) {
+    public TransactionView(Long customerID, Long accountID, BigDecimal amount) {
         this.customerID = customerID;
         this.accountID = accountID;
         this.amount = amount;

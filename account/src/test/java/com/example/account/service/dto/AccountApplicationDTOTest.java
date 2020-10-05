@@ -9,10 +9,10 @@ public class AccountApplicationDTOTest {
 
     @Test
     public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(AccountApplicationDTO.class);
-        AccountApplicationDTO accountApplicationDTO1 = new AccountApplicationDTO();
+        TestUtil.equalsVerifier(AccountApplyCommand.class);
+        AccountApplyCommand accountApplicationDTO1 = new AccountApplyCommand();
         accountApplicationDTO1.setId(1L);
-        AccountApplicationDTO accountApplicationDTO2 = new AccountApplicationDTO();
+        AccountApplyCommand accountApplicationDTO2 = new AccountApplyCommand();
         assertThat(accountApplicationDTO1).isNotEqualTo(accountApplicationDTO2);
         accountApplicationDTO2.setId(accountApplicationDTO1.getId());
         assertThat(accountApplicationDTO1).isEqualTo(accountApplicationDTO2);

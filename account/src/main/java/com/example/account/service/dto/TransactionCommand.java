@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-public class SimpleTransaction {
+public class TransactionCommand {
 
     @NotNull
     private final Long customerID;
@@ -12,7 +12,7 @@ public class SimpleTransaction {
     @Positive
     private final BigDecimal amount;
 
-    public SimpleTransaction(Long customerID, BigDecimal amount) {
+    public TransactionCommand(Long customerID, BigDecimal amount) {
         this.customerID = customerID;
         this.amount = amount;
     }

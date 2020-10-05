@@ -7,7 +7,7 @@ import javax.validation.constraints.*;
 /**
  * A DTO for the {@link com.example.account.domain.AccountApplication} entity.
  */
-public class AccountApplicationDTO implements Serializable {
+public class AccountApplyCommand implements Serializable {
     private Long id;
 
     @NotNull
@@ -44,11 +44,11 @@ public class AccountApplicationDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof AccountApplicationDTO)) {
+        if (!(o instanceof AccountApplyCommand)) {
             return false;
         }
 
-        return id != null && id.equals(((AccountApplicationDTO) o).id);
+        return id != null && id.equals(((AccountApplyCommand) o).id);
     }
 
     @Override

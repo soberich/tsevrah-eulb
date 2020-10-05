@@ -1,28 +1,42 @@
 package com.example.account.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import com.example.account.AccountApp;
+import com.example.account.client.TransactionClient;
+import com.example.account.client.UserClient;
 import com.example.account.domain.AccountApplication;
 import com.example.account.repository.AccountApplicationRepository;
 import com.example.account.service.AccountApplicationService;
-import com.example.account.service.dto.AccountApplicationDTO;
+import com.example.account.service.dto.AccountApplyCommand;
+import com.example.account.service.dto.TransactionCommand;
+import com.example.account.service.dto.TransactionView;
+import com.example.account.service.dto.UserDetailedView;
 import com.example.account.service.mapper.AccountApplicationMapper;
-import java.math.BigDecimal;
-import java.util.List;
-import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Integration tests for the {@link AccountApplicationResource} REST controller.
@@ -34,8 +48,11 @@ public class AccountApplicationResourceIT {
     private static final Long DEFAULT_CUSTOMER_ID = 1L;
     private static final Long UPDATED_CUSTOMER_ID = 2L;
 
-    private static final BigDecimal DEFAULT_INITIAL_CREDIT = new BigDecimal(1);
-    private static final BigDecimal UPDATED_INITIAL_CREDIT = new BigDecimal(2);
+    private static final Long DEFAULT_ACCOUNT_ID = 1L;
+    private static final Long UPDATED_ACCOUNT_ID = 2L;
+
+    private static final BigDecimal DEFAULT_INITIAL_CREDIT = BigDecimal.ONE;
+    private static final BigDecimal UPDATED_INITIAL_CREDIT = BigDecimal.valueOf(2L);
 
     @Autowired
     private AccountApplicationRepository accountApplicationRepository;
@@ -45,6 +62,12 @@ public class AccountApplicationResourceIT {
 
     @Autowired
     private AccountApplicationService accountApplicationService;
+
+    @MockBean
+    private TransactionClient transactionClient;
+
+    @MockBean
+    private UserClient userClient;
 
     @Autowired
     private EntityManager em;
@@ -56,7 +79,7 @@ public class AccountApplicationResourceIT {
 
     /**
      * Create an entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -68,7 +91,7 @@ public class AccountApplicationResourceIT {
 
     /**
      * Create an updated entity for this test.
-     *
+     * <p>
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
@@ -80,19 +103,39 @@ public class AccountApplicationResourceIT {
 
     @BeforeEach
     public void initTest() {
+        doReturn(new TransactionView(DEFAULT_CUSTOMER_ID, DEFAULT_ACCOUNT_ID, DEFAULT_INITIAL_CREDIT))
+            .when(transactionClient).processTransaction(any(TransactionCommand.class));
+
+        doReturn(
+            new UserDetailedView()
+                .setId(DEFAULT_CUSTOMER_ID)
+                .setFirstName("admin")
+                .setLastName("admin")
+        ).when(userClient).getUserDetails(DEFAULT_CUSTOMER_ID);
+
+        doReturn(
+            List.of(
+                new TransactionView(DEFAULT_CUSTOMER_ID, DEFAULT_ACCOUNT_ID, BigDecimal.TEN),
+                new TransactionView(DEFAULT_CUSTOMER_ID, DEFAULT_ACCOUNT_ID, BigDecimal.TEN)
+            )
+        ).when(transactionClient).getAllTransactionsForCustomer(DEFAULT_CUSTOMER_ID);
+
         accountApplication = createEntity(em);
     }
 
     @Test
     @Transactional
+    @DisplayName("+ The API will expose an endpoint which accepts the user information (customerID, initialCredit).\n" +
+                 "+ Also, if initialCredit is not 0, a transaction will be sent to the new account.")
     public void createAccountApplication() throws Exception {
         int databaseSizeBeforeCreate = accountApplicationRepository.findAll().size();
         // Create the AccountApplication
-        AccountApplicationDTO accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
+        AccountApplyCommand accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
+        accountApplicationDTO.setInitialCredit(DEFAULT_INITIAL_CREDIT);
         restAccountApplicationMockMvc
             .perform(
                 post("/api/account-applications")
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(TestUtil.convertObjectToJsonBytes(accountApplicationDTO))
             )
             .andExpect(status().isCreated());
@@ -102,6 +145,26 @@ public class AccountApplicationResourceIT {
         assertThat(accountApplicationList).hasSize(databaseSizeBeforeCreate + 1);
         AccountApplication testAccountApplication = accountApplicationList.get(accountApplicationList.size() - 1);
         assertThat(testAccountApplication.getCustomerID()).isEqualTo(DEFAULT_CUSTOMER_ID);
+        verify(transactionClient).processTransaction(notNull());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("+ Once the endpoint is called, a new account will be opened connected to the user whose ID is customerID.")
+    public void createAccountApplicationAndConnectToUserWithCustomerID() throws Exception {
+        int databaseSizeBeforeCreate = accountApplicationRepository.findAll().size();
+        // Create the AccountApplication
+        AccountApplyCommand accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
+        accountApplicationDTO.setInitialCredit(DEFAULT_INITIAL_CREDIT);
+        UserDetailedView userDetails = userClient.getUserDetails(DEFAULT_CUSTOMER_ID);
+        restAccountApplicationMockMvc
+            .perform(
+                post("/api/account-applications")
+                    .contentType(APPLICATION_JSON)
+                    .content(TestUtil.convertObjectToJsonBytes(accountApplicationDTO))
+            )
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.customerID").value(userDetails.getId()));
     }
 
     @Test
@@ -111,13 +174,13 @@ public class AccountApplicationResourceIT {
 
         // Create the AccountApplication with an existing ID
         accountApplication.setId(1L);
-        AccountApplicationDTO accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
+        AccountApplyCommand accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restAccountApplicationMockMvc
             .perform(
                 post("/api/account-applications")
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(TestUtil.convertObjectToJsonBytes(accountApplicationDTO))
             )
             .andExpect(status().isBadRequest());
@@ -135,12 +198,12 @@ public class AccountApplicationResourceIT {
         accountApplication.setCustomerID(null);
 
         // Create the AccountApplication, which fails.
-        AccountApplicationDTO accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
+        AccountApplyCommand accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
 
         restAccountApplicationMockMvc
             .perform(
                 post("/api/account-applications")
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(TestUtil.convertObjectToJsonBytes(accountApplicationDTO))
             )
             .andExpect(status().isBadRequest());
@@ -151,6 +214,25 @@ public class AccountApplicationResourceIT {
 
     @Test
     @Transactional
+    @DisplayName("Another Endpoint will output the user information showing Name, Surname, balance, and transactions of the accounts.")
+    public void outputUserInformation() throws Exception {
+        // Initialize the database
+        accountApplicationRepository.saveAndFlush(accountApplication);
+
+        restAccountApplicationMockMvc
+            .perform(get("/api/my-account-applications/{customerID}", DEFAULT_CUSTOMER_ID))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.customerID").value(DEFAULT_CUSTOMER_ID))
+            .andExpect(jsonPath("$.name").value("admin"))
+            .andExpect(jsonPath("$.surname").value("admin"))
+            .andExpect(jsonPath("$.balance").value(BigDecimal.valueOf(20L)))
+            .andExpect(jsonPath("$.transactions").value(hasSize(2)));
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("Another Endpoint will output the user information showing Name, Surname, balance, and transactions of the accounts.")
     public void getAllAccountApplications() throws Exception {
         // Initialize the database
         accountApplicationRepository.saveAndFlush(accountApplication);
@@ -159,7 +241,7 @@ public class AccountApplicationResourceIT {
         restAccountApplicationMockMvc
             .perform(get("/api/account-applications?sort=id,desc"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(accountApplication.getId().intValue())))
             .andExpect(jsonPath("$.[*].customerID").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())));
     }
@@ -174,7 +256,7 @@ public class AccountApplicationResourceIT {
         restAccountApplicationMockMvc
             .perform(get("/api/account-applications/{id}", accountApplication.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().contentType(APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(accountApplication.getId().intValue()))
             .andExpect(jsonPath("$.customerID").value(DEFAULT_CUSTOMER_ID.intValue()));
     }
@@ -199,12 +281,12 @@ public class AccountApplicationResourceIT {
         // Disconnect from session so that the updates on updatedAccountApplication are not directly saved in db
         em.detach(updatedAccountApplication);
         updatedAccountApplication.customerID(UPDATED_CUSTOMER_ID);
-        AccountApplicationDTO accountApplicationDTO = accountApplicationMapper.toDto(updatedAccountApplication);
+        AccountApplyCommand accountApplicationDTO = accountApplicationMapper.toDto(updatedAccountApplication);
 
         restAccountApplicationMockMvc
             .perform(
                 put("/api/account-applications")
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(TestUtil.convertObjectToJsonBytes(accountApplicationDTO))
             )
             .andExpect(status().isOk());
@@ -222,13 +304,13 @@ public class AccountApplicationResourceIT {
         int databaseSizeBeforeUpdate = accountApplicationRepository.findAll().size();
 
         // Create the AccountApplication
-        AccountApplicationDTO accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
+        AccountApplyCommand accountApplicationDTO = accountApplicationMapper.toDto(accountApplication);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAccountApplicationMockMvc
             .perform(
                 put("/api/account-applications")
-                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .content(TestUtil.convertObjectToJsonBytes(accountApplicationDTO))
             )
             .andExpect(status().isBadRequest());
@@ -248,7 +330,7 @@ public class AccountApplicationResourceIT {
 
         // Delete the accountApplication
         restAccountApplicationMockMvc
-            .perform(delete("/api/account-applications/{id}", accountApplication.getId()).accept(MediaType.APPLICATION_JSON))
+            .perform(delete("/api/account-applications/{id}", accountApplication.getId()).accept(APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item

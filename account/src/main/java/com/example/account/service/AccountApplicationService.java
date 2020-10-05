@@ -2,7 +2,7 @@ package com.example.account.service;
 
 import com.example.account.domain.AccountApplication;
 import com.example.account.repository.AccountApplicationRepository;
-import com.example.account.service.dto.AccountApplicationDTO;
+import com.example.account.service.dto.AccountApplyCommand;
 import com.example.account.service.mapper.AccountApplicationMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class AccountApplicationService {
      * @param accountApplicationDTO the entity to save.
      * @return the persisted entity.
      */
-    public AccountApplicationDTO save(AccountApplicationDTO accountApplicationDTO) {
+    public AccountApplyCommand save(AccountApplyCommand accountApplicationDTO) {
         log.debug("Request to save AccountApplication : {}", accountApplicationDTO);
         AccountApplication accountApplication = accountApplicationMapper.toEntity(accountApplicationDTO);
         accountApplication = accountApplicationRepository.save(accountApplication);
@@ -52,7 +52,7 @@ public class AccountApplicationService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<AccountApplicationDTO> findAll(Pageable pageable) {
+    public Page<AccountApplyCommand> findAll(Pageable pageable) {
         log.debug("Request to get all AccountApplications");
         return accountApplicationRepository.findAll(pageable).map(accountApplicationMapper::toDto);
     }
@@ -64,7 +64,7 @@ public class AccountApplicationService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<AccountApplicationDTO> findOne(Long id) {
+    public Optional<AccountApplyCommand> findOne(Long id) {
         log.debug("Request to get AccountApplication : {}", id);
         return accountApplicationRepository.findById(id).map(accountApplicationMapper::toDto);
     }

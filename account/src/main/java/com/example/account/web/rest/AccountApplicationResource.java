@@ -3,11 +3,11 @@ package com.example.account.web.rest;
 import com.example.account.client.TransactionClient;
 import com.example.account.client.UserClient;
 import com.example.account.service.AccountApplicationService;
-import com.example.account.service.dto.AccountApplicationDTO;
-import com.example.account.service.dto.CustomerDetails;
-import com.example.account.service.dto.AccountTransaction;
-import com.example.account.service.dto.SimpleTransaction;
-import com.example.account.service.dto.UserDetails;
+import com.example.account.service.dto.AccountApplyCommand;
+import com.example.account.service.dto.CustomerDetailedView;
+import com.example.account.service.dto.TransactionView;
+import com.example.account.service.dto.TransactionCommand;
+import com.example.account.service.dto.UserDetailedView;
 import com.example.account.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
@@ -73,23 +73,30 @@ public class AccountApplicationResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/account-applications")
-    public ResponseEntity<AccountApplicationDTO> createAccountApplication(@Valid @RequestBody AccountApplicationDTO accountApplicationDTO)
+    public ResponseEntity<AccountApplyCommand> createAccountApplication(@Valid @RequestBody AccountApplyCommand accountApplicationDTO)
         throws URISyntaxException {
         log.debug("REST request to save AccountApplication : {}", accountApplicationDTO);
         if (accountApplicationDTO.getId() != null) {
             throw new BadRequestAlertException("A new accountApplication cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        AccountApplicationDTO result = accountApplicationService.save(accountApplicationDTO);
 
-        if (accountApplicationDTO.getInitialCredit() != null && !ZERO.equals(accountApplicationDTO.getInitialCredit())) {
-            transactionClient.processTransaction(new SimpleTransaction(result.getCustomerID(), accountApplicationDTO.getInitialCredit()));
+        UserDetailedView userDetailedView = userClient.getUserDetails(accountApplicationDTO.getCustomerID());
+
+        if (userDetailedView != null && userDetailedView.getId() != null) {
+
+            AccountApplyCommand result = accountApplicationService.save(accountApplicationDTO);
+
+            if (accountApplicationDTO.getInitialCredit() != null && !ZERO.equals(accountApplicationDTO.getInitialCredit())) {
+                transactionClient.processTransaction(new TransactionCommand(result.getCustomerID(), accountApplicationDTO.getInitialCredit()));
+            }
+
+            return ResponseEntity
+                       .created(new URI("/api/account-applications/" + result.getId()))
+                       .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                       .body(result);
         }
 
-        return ResponseEntity
-                   .created(new URI("/api/account-applications/" + result.getId()))
-                   .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-                   .body(result);
-
+        throw new BadRequestAlertException("Invalid customerID, no user exist with id equal to customerID to map it to", ENTITY_NAME, "idnull");
     }
 
     /**
@@ -102,13 +109,13 @@ public class AccountApplicationResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/account-applications")
-    public ResponseEntity<AccountApplicationDTO> updateAccountApplication(@Valid @RequestBody AccountApplicationDTO accountApplicationDTO)
+    public ResponseEntity<AccountApplyCommand> updateAccountApplication(@Valid @RequestBody AccountApplyCommand accountApplicationDTO)
         throws URISyntaxException {
         log.debug("REST request to update AccountApplication : {}", accountApplicationDTO);
         if (accountApplicationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        AccountApplicationDTO result = accountApplicationService.save(accountApplicationDTO);
+        AccountApplyCommand result = accountApplicationService.save(accountApplicationDTO);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, accountApplicationDTO.getId().toString()))
@@ -122,9 +129,9 @@ public class AccountApplicationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of accountApplications in body.
      */
     @GetMapping("/account-applications")
-    public ResponseEntity<List<AccountApplicationDTO>> getAllAccountApplications(Pageable pageable) {
+    public ResponseEntity<List<AccountApplyCommand>> getAllAccountApplications(Pageable pageable) {
         log.debug("REST request to get a page of AccountApplications");
-        Page<AccountApplicationDTO> page = accountApplicationService.findAll(pageable);
+        Page<AccountApplyCommand> page = accountApplicationService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -136,19 +143,19 @@ public class AccountApplicationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of accountApplications in body.
      */
     @GetMapping("/my-account-applications/{customerID}")
-    public ResponseEntity<CustomerDetails> getAccountDetails(@PathVariable Long customerID) throws URISyntaxException {
+    public ResponseEntity<CustomerDetailedView> getAccountDetails(@PathVariable Long customerID) throws URISyntaxException {
         log.debug("REST request to get a page of AccountApplications");
-        UserDetails userDetails = userClient.getUserDetails(customerID);
+        UserDetailedView userDetails = userClient.getUserDetails(customerID);
         if (userDetails != null) {
 
-            List<AccountTransaction> transactions = transactionClient.getAllTransactionsForCustomer(customerID);
+            List<TransactionView> transactions = transactionClient.getAllTransactionsForCustomer(customerID);
 
-            CustomerDetails result =
-                new CustomerDetails(
+            CustomerDetailedView result =
+                new CustomerDetailedView(
                     customerID,
                     userDetails.getFirstName(),
                     userDetails.getLastName(),
-                    transactions.stream().map(AccountTransaction::getAmount).reduce(ZERO, BigDecimal::add),
+                    transactions.stream().map(TransactionView::getAmount).reduce(ZERO, BigDecimal::add),
                     transactions);
 
             return ResponseEntity.ok(result);
@@ -163,9 +170,9 @@ public class AccountApplicationResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the accountApplicationDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/account-applications/{id}")
-    public ResponseEntity<AccountApplicationDTO> getAccountApplication(@PathVariable Long id) {
+    public ResponseEntity<AccountApplyCommand> getAccountApplication(@PathVariable Long id) {
         log.debug("REST request to get AccountApplication : {}", id);
-        Optional<AccountApplicationDTO> accountApplicationDTO = accountApplicationService.findOne(id);
+        Optional<AccountApplyCommand> accountApplicationDTO = accountApplicationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(accountApplicationDTO);
     }
 
