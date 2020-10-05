@@ -1,26 +1,43 @@
 package com.example.account.web.rest;
 
+import com.example.account.client.TransactionClient;
+import com.example.account.client.UserClient;
 import com.example.account.service.AccountApplicationService;
 import com.example.account.service.dto.AccountApplicationDTO;
+import com.example.account.service.dto.CustomerDetails;
+import com.example.account.service.dto.AccountTransaction;
+import com.example.account.service.dto.SimpleTransaction;
+import com.example.account.service.dto.UserDetails;
 import com.example.account.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.concurrent.*;
+
+import static java.math.BigDecimal.*;
 
 /**
  * REST controller for managing {@link com.example.account.domain.AccountApplication}.
@@ -35,10 +52,17 @@ public class AccountApplicationResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final AccountApplicationService accountApplicationService;
+    @Resource(name = "taskExecutor")
+    Executor executor;
 
-    public AccountApplicationResource(AccountApplicationService accountApplicationService) {
+    private final AccountApplicationService accountApplicationService;
+    private final TransactionClient transactionClient;
+    private final UserClient userClient;
+
+    public AccountApplicationResource(AccountApplicationService accountApplicationService, TransactionClient transactionClient, UserClient userClient) {
         this.accountApplicationService = accountApplicationService;
+        this.transactionClient = transactionClient;
+        this.userClient = userClient;
     }
 
     /**
@@ -56,10 +80,16 @@ public class AccountApplicationResource {
             throw new BadRequestAlertException("A new accountApplication cannot already have an ID", ENTITY_NAME, "idexists");
         }
         AccountApplicationDTO result = accountApplicationService.save(accountApplicationDTO);
+
+        if (accountApplicationDTO.getInitialCredit() != null && !ZERO.equals(accountApplicationDTO.getInitialCredit())) {
+            transactionClient.processTransaction(new SimpleTransaction(result.getCustomerID(), accountApplicationDTO.getInitialCredit()));
+        }
+
         return ResponseEntity
-            .created(new URI("/api/account-applications/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                   .created(new URI("/api/account-applications/" + result.getId()))
+                   .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                   .body(result);
+
     }
 
     /**
@@ -97,6 +127,33 @@ public class AccountApplicationResource {
         Page<AccountApplicationDTO> page = accountApplicationService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /my-account-applications} : get all the accountApplications.
+     *
+     * @param customerID the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of accountApplications in body.
+     */
+    @GetMapping("/my-account-applications/{customerID}")
+    public ResponseEntity<CustomerDetails> getAccountDetails(@PathVariable Long customerID) throws URISyntaxException {
+        log.debug("REST request to get a page of AccountApplications");
+        UserDetails userDetails = userClient.getUserDetails(customerID);
+        if (userDetails != null) {
+
+            List<AccountTransaction> transactions = transactionClient.getAllTransactionsForCustomer(customerID);
+
+            CustomerDetails result =
+                new CustomerDetails(
+                    customerID,
+                    userDetails.getFirstName(),
+                    userDetails.getLastName(),
+                    transactions.stream().map(AccountTransaction::getAmount).reduce(ZERO, BigDecimal::add),
+                    transactions);
+
+            return ResponseEntity.ok(result);
+        }
+        throw new BadRequestAlertException("Invalid customerID, no user exist with such id", ENTITY_NAME, "idnull");
     }
 
     /**

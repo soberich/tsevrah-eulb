@@ -1,7 +1,10 @@
 package com.example.gateway.web.rest;
 
 import com.example.gateway.security.AuthoritiesConstants;
+import com.example.gateway.service.UserService;
+import com.example.gateway.service.dto.UserDTO;
 import com.example.gateway.web.rest.vm.RouteVM;
+import io.github.jhipster.web.util.ResponseUtil;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -21,9 +24,12 @@ public class GatewayResource {
 
     private final DiscoveryClient discoveryClient;
 
-    public GatewayResource(RouteLocator routeLocator, DiscoveryClient discoveryClient) {
+    private final UserService userService;
+
+    public GatewayResource(RouteLocator routeLocator, DiscoveryClient discoveryClient, UserService userService) {
         this.routeLocator = routeLocator;
         this.discoveryClient = discoveryClient;
+        this.userService = userService;
     }
 
     /**
@@ -46,5 +52,16 @@ public class GatewayResource {
             }
         );
         return ResponseEntity.ok(routeVMs);
+    }
+
+    /**
+     * {@code GET /user/:id} : get the "id" user.
+     *
+     * @param id the id of the user to find.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "id" user, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/user")
+    public ResponseEntity<UserDTO> getUser(@RequestParam Long id) {
+        return ResponseUtil.wrapOrNotFound(userService.getUserWithoutAuthoritiesById(id).map(UserDTO::new));
     }
 }

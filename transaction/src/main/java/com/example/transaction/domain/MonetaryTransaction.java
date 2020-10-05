@@ -19,12 +19,10 @@ public class MonetaryTransaction implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @NotNull
-    @Column(name = "recipient_id", nullable = false)
+    @Column(name = "recipient_id")
     private Long recipientID;
 
-    @NotNull
-    @Column(name = "sender_id", nullable = false)
+    @Column(name = "sender_id")
     private Long senderID;
 
     @NotNull

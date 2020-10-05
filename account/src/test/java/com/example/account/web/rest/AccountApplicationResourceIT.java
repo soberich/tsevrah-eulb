@@ -62,8 +62,7 @@ public class AccountApplicationResourceIT {
      */
     public static AccountApplication createEntity(EntityManager em) {
         AccountApplication accountApplication = new AccountApplication()
-            .customerID(DEFAULT_CUSTOMER_ID)
-            .initialCredit(DEFAULT_INITIAL_CREDIT);
+            .customerID(DEFAULT_CUSTOMER_ID);
         return accountApplication;
     }
 
@@ -75,8 +74,7 @@ public class AccountApplicationResourceIT {
      */
     public static AccountApplication createUpdatedEntity(EntityManager em) {
         AccountApplication accountApplication = new AccountApplication()
-            .customerID(UPDATED_CUSTOMER_ID)
-            .initialCredit(UPDATED_INITIAL_CREDIT);
+            .customerID(UPDATED_CUSTOMER_ID);
         return accountApplication;
     }
 
@@ -104,7 +102,6 @@ public class AccountApplicationResourceIT {
         assertThat(accountApplicationList).hasSize(databaseSizeBeforeCreate + 1);
         AccountApplication testAccountApplication = accountApplicationList.get(accountApplicationList.size() - 1);
         assertThat(testAccountApplication.getCustomerID()).isEqualTo(DEFAULT_CUSTOMER_ID);
-        assertThat(testAccountApplication.getInitialCredit()).isEqualTo(DEFAULT_INITIAL_CREDIT);
     }
 
     @Test
@@ -164,8 +161,7 @@ public class AccountApplicationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(accountApplication.getId().intValue())))
-            .andExpect(jsonPath("$.[*].customerID").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())))
-            .andExpect(jsonPath("$.[*].initialCredit").value(hasItem(DEFAULT_INITIAL_CREDIT.intValue())));
+            .andExpect(jsonPath("$.[*].customerID").value(hasItem(DEFAULT_CUSTOMER_ID.intValue())));
     }
 
     @Test
@@ -180,8 +176,7 @@ public class AccountApplicationResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(accountApplication.getId().intValue()))
-            .andExpect(jsonPath("$.customerID").value(DEFAULT_CUSTOMER_ID.intValue()))
-            .andExpect(jsonPath("$.initialCredit").value(DEFAULT_INITIAL_CREDIT.intValue()));
+            .andExpect(jsonPath("$.customerID").value(DEFAULT_CUSTOMER_ID.intValue()));
     }
 
     @Test
@@ -203,7 +198,7 @@ public class AccountApplicationResourceIT {
         AccountApplication updatedAccountApplication = accountApplicationRepository.findById(accountApplication.getId()).get();
         // Disconnect from session so that the updates on updatedAccountApplication are not directly saved in db
         em.detach(updatedAccountApplication);
-        updatedAccountApplication.customerID(UPDATED_CUSTOMER_ID).initialCredit(UPDATED_INITIAL_CREDIT);
+        updatedAccountApplication.customerID(UPDATED_CUSTOMER_ID);
         AccountApplicationDTO accountApplicationDTO = accountApplicationMapper.toDto(updatedAccountApplication);
 
         restAccountApplicationMockMvc
@@ -219,7 +214,6 @@ public class AccountApplicationResourceIT {
         assertThat(accountApplicationList).hasSize(databaseSizeBeforeUpdate);
         AccountApplication testAccountApplication = accountApplicationList.get(accountApplicationList.size() - 1);
         assertThat(testAccountApplication.getCustomerID()).isEqualTo(UPDATED_CUSTOMER_ID);
-        assertThat(testAccountApplication.getInitialCredit()).isEqualTo(UPDATED_INITIAL_CREDIT);
     }
 
     @Test

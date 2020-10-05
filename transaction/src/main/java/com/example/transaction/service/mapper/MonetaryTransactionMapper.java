@@ -9,11 +9,11 @@ import org.mapstruct.*;
  */
 @Mapper(componentModel = "spring", uses = { AccountStateMapper.class })
 public interface MonetaryTransactionMapper extends EntityMapper<MonetaryTransactionDTO, MonetaryTransaction> {
-    @Mapping(source = "account.id", target = "accountId")
+    @Mapping(source = "account.id", target = "accountStateID")
     @Mapping(source = "account.customerID", target = "accountCustomerID")
     MonetaryTransactionDTO toDto(MonetaryTransaction monetaryTransaction);
 
-    @Mapping(source = "accountId", target = "account")
+    @Mapping(source = "accountStateID", target = "account")
     MonetaryTransaction toEntity(MonetaryTransactionDTO monetaryTransactionDTO);
 
     default MonetaryTransaction fromId(Long id) {

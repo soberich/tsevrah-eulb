@@ -17,7 +17,7 @@ import { mapIdList } from 'app/shared/util/entity-utils';
 export interface IMonetaryTransactionUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const MonetaryTransactionUpdate = (props: IMonetaryTransactionUpdateProps) => {
-  const [accountId, setAccountId] = useState('0');
+  const [accountStateID, setaccountStateID] = useState('0');
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
 
   const { monetaryTransactionEntity, accountStates, loading, updating } = props;
@@ -128,7 +128,7 @@ export const MonetaryTransactionUpdate = (props: IMonetaryTransactionUpdateProps
                 <Label for="monetary-transaction-account">
                   <Translate contentKey="gatewayApp.transactionMonetaryTransaction.account">Account</Translate>
                 </Label>
-                <AvInput id="monetary-transaction-account" type="select" className="form-control" name="accountId" required>
+                <AvInput id="monetary-transaction-account" type="select" className="form-control" name="accountStateID" required>
                   {accountStates
                     ? accountStates.map(otherEntity => (
                         <option value={otherEntity.id} key={otherEntity.id}>

@@ -273,6 +273,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<User> getUserWithoutAuthoritiesById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        user.map(User::getAuthorities).map(Collection::size); //lazy init
+        return user;
+    }
+
+    @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneWithAuthoritiesByLogin(login);
     }
