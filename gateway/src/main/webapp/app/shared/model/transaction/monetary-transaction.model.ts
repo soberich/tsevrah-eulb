@@ -4,7 +4,7 @@ export interface IMonetaryTransaction {
   senderID?: number;
   amount?: number;
   accountCustomerID?: string;
-  accountId?: number;
+  accountStateID?: number;
 }
 
 export const defaultValue: Readonly<IMonetaryTransaction> = {};

@@ -1,19 +1,26 @@
 package com.example.account.web.rest;
 
+import com.example.account.client.TransactionClient;
 import com.example.account.service.AccountApplicationService;
 import com.example.account.service.dto.AccountApplicationDTO;
 import com.example.account.web.rest.errors.BadRequestAlertException;
+import com.example.account.web.rest.vm.SimpleTransaction;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.*;
+import javax.annotation.Resource;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -35,10 +42,15 @@ public class AccountApplicationResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final AccountApplicationService accountApplicationService;
+    @Resource(name = "taskExecutor")
+    Executor executor;
 
-    public AccountApplicationResource(AccountApplicationService accountApplicationService) {
+    private final AccountApplicationService accountApplicationService;
+    private final TransactionClient transactionClient;
+
+    public AccountApplicationResource(AccountApplicationService accountApplicationService, TransactionClient transactionClient) {
         this.accountApplicationService = accountApplicationService;
+        this.transactionClient = transactionClient;
     }
 
     /**
@@ -56,6 +68,13 @@ public class AccountApplicationResource {
             throw new BadRequestAlertException("A new accountApplication cannot already have an ID", ENTITY_NAME, "idexists");
         }
         AccountApplicationDTO result = accountApplicationService.save(accountApplicationDTO);
+        if (accountApplicationDTO.getInitialCredit() != null && !BigDecimal.ZERO.equals(accountApplicationDTO.getInitialCredit())) {
+            //fire-and-forget
+            CompletableFuture.runAsync(
+                () -> transactionClient.processTransaction(new SimpleTransaction(result.getCustomerID(), accountApplicationDTO.getInitialCredit())),
+                executor
+            );
+        }
         return ResponseEntity
             .created(new URI("/api/account-applications/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

@@ -1,5 +1,6 @@
 package com.example.transaction.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -24,13 +25,10 @@ public class MonetaryTransactionDTO implements Serializable {
     @NotNull
     private BigDecimal amount;
 
-    /**
-     * Issued transaction
-     */
-    @ApiModelProperty(value = "Issued transaction")
-    private Long accountId;
+    private Long accountStateID;
 
-    private String accountCustomerID;
+    @JsonAlias("customerID")
+    private Long accountCustomerID;
 
     public Long getId() {
         return id;
@@ -64,19 +62,19 @@ public class MonetaryTransactionDTO implements Serializable {
         this.amount = amount;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public Long getAccountStateID() {
+        return accountStateID;
     }
 
-    public void setAccountId(Long accountStateId) {
-        this.accountId = accountStateId;
+    public void setAccountStateID(Long accountStateID) {
+        this.accountStateID = accountStateID;
     }
 
-    public String getAccountCustomerID() {
+    public Long getAccountCustomerID() {
         return accountCustomerID;
     }
 
-    public void setAccountCustomerID(String accountStateCustomerID) {
+    public void setAccountCustomerID(Long accountStateCustomerID) {
         this.accountCustomerID = accountStateCustomerID;
     }
 
@@ -105,7 +103,7 @@ public class MonetaryTransactionDTO implements Serializable {
             ", recipientID=" + getRecipientID() +
             ", senderID=" + getSenderID() +
             ", amount=" + getAmount() +
-            ", accountId=" + getAccountId() +
+            ", accountStateID=" + getAccountStateID() +
             ", accountCustomerID='" + getAccountCustomerID() + "'" +
             "}";
     }

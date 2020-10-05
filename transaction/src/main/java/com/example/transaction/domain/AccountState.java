@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+import static javax.persistence.CascadeType.*;
+
 /**
  * A AccountState.
  */
@@ -20,6 +22,9 @@ public class AccountState implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    /**
+     * Maps to Account ID, NOT User ID
+     */
     @NotNull
     @Column(name = "customer_id", nullable = false)
     private Long customerID;
@@ -31,7 +36,7 @@ public class AccountState implements Serializable {
     /**
      * All transactions
      */
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = ALL)
     private Set<MonetaryTransaction> transactions = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

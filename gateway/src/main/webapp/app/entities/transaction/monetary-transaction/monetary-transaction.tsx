@@ -134,7 +134,7 @@ export const MonetaryTransaction = (props: IMonetaryTransactionProps) => {
                     <td>{monetaryTransaction.amount}</td>
                     <td>
                       {monetaryTransaction.accountCustomerID ? (
-                        <Link to={`account-state/${monetaryTransaction.accountId}`}>{monetaryTransaction.accountCustomerID}</Link>
+                        <Link to={`account-state/${monetaryTransaction.accountStateID}`}>{monetaryTransaction.accountCustomerID}</Link>
                       ) : (
                         ''
                       )}
