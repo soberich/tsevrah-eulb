@@ -9,7 +9,9 @@ import com.example.transaction.service.mapper.AccountStateMapper;
 import com.example.transaction.service.mapper.MonetaryTransactionMapper;
 
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -51,7 +53,8 @@ public class MonetaryTransactionService {
         log.debug("Request to save MonetaryTransaction : {}", monetaryTransactionDTO);
 
         AccountState accountState =
-            accountStateRepository.findById(monetaryTransactionDTO.getAccountStateID())
+            Optional.ofNullable(monetaryTransactionDTO.getAccountStateID())
+                .flatMap(accountStateRepository::findById)
                 .orElseGet(() ->
                                new AccountState()
                                    .customerID(monetaryTransactionDTO.getAccountCustomerID()));
@@ -83,6 +86,18 @@ public class MonetaryTransactionService {
     public Page<MonetaryTransactionDTO> findAll(Pageable pageable) {
         log.debug("Request to get all MonetaryTransactions");
         return monetaryTransactionRepository.findAll(pageable).map(monetaryTransactionMapper::toDto);
+    }
+
+    /**
+     * Get one monetaryTransaction by id.
+     *
+     * @param id the id of the entity.
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public List<MonetaryTransactionDTO> findByAccount(Long id) {
+        log.debug("Request to get MonetaryTransaction : {}", id);
+        return monetaryTransactionRepository.findAllByAccount_CustomerID(id).map(monetaryTransactionMapper::toDto).collect(Collectors.toList());
     }
 
     /**

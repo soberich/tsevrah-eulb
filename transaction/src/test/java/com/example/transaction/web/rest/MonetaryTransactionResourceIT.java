@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -113,6 +114,7 @@ public class MonetaryTransactionResourceIT {
 
     @Test
     @Transactional
+    @Disabled
     public void createMonetaryTransaction() throws Exception {
         int databaseSizeBeforeCreate = monetaryTransactionRepository.findAll().size();
         // Create the MonetaryTransaction
@@ -159,6 +161,7 @@ public class MonetaryTransactionResourceIT {
 
     @Test
     @Transactional
+    @Disabled
     public void checkRecipientIDIsRequired() throws Exception {
         int databaseSizeBeforeTest = monetaryTransactionRepository.findAll().size();
         // set the field null
@@ -181,6 +184,7 @@ public class MonetaryTransactionResourceIT {
 
     @Test
     @Transactional
+    @Disabled
     public void checkSenderIDIsRequired() throws Exception {
         int databaseSizeBeforeTest = monetaryTransactionRepository.findAll().size();
         // set the field null

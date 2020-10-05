@@ -1,4 +1,4 @@
-package com.example.account.web.rest.vm;
+package com.example.account.service.dto;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -10,18 +10,18 @@ public class SimpleTransaction {
     private final Long customerID;
     @NotNull
     @Positive
-    private final BigDecimal initialCredit;
+    private final BigDecimal amount;
 
-    public SimpleTransaction(Long customerID, BigDecimal initialCredit) {
+    public SimpleTransaction(Long customerID, BigDecimal amount) {
         this.customerID = customerID;
-        this.initialCredit = initialCredit;
+        this.amount = amount;
     }
 
     public Long getCustomerID() {
         return customerID;
     }
 
-    public BigDecimal getInitialCredit() {
-        return initialCredit;
+    public BigDecimal getAmount() {
+        return amount;
     }
 }

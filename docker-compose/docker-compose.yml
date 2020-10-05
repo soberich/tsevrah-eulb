@@ -12,7 +12,7 @@ services:
       - JHIPSTER_SLEEP=30
       - JHIPSTER_REGISTRY_PASSWORD=admin
     ports:
-      - '8080:8080'
+      - '8080:8081'
   gateway-postgresql:
     image: 'postgres:12.3'
     environment:

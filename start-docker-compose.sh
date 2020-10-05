@@ -9,6 +9,6 @@ then
     NAME="$(echo $NAME | rev)"
 fi
 
-docker-compose --project-name "$NAME" up -d
+docker-compose --project-name "$NAME" up
 
-docker-compose --project-name "$NAME" logs -f
+#docker-compose --project-name "$NAME" logs -f

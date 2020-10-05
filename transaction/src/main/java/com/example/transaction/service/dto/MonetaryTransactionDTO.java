@@ -16,10 +16,8 @@ import javax.validation.constraints.*;
 public class MonetaryTransactionDTO implements Serializable {
     private Long id;
 
-    @NotNull
     private Long recipientID;
 
-    @NotNull
     private Long senderID;
 
     @NotNull

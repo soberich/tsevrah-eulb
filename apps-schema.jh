@@ -28,6 +28,7 @@ application {
 
         //skipClient true
         enableSwaggerCodegen true
+        serverPort 8081
     }
     entities *
 }
@@ -60,6 +61,7 @@ application {
 
         //skipClient true
         enableSwaggerCodegen true
+        serverPort 8082
     }
     entities AccountApplication
 }
@@ -92,6 +94,7 @@ application {
 
         //skipClient true
         enableSwaggerCodegen true
+        serverPort 8083
     }
     entities MonetaryTransaction, AccountState
 }

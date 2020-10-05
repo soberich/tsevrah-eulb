@@ -92,6 +92,19 @@ public class MonetaryTransactionResource {
     /**
      * {@code GET  /monetary-transactions} : get all the monetaryTransactions.
      *
+     * @param customerID customerID.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of monetaryTransactions in body.
+     */
+    @GetMapping("/my-monetary-transactions/{customerID}")
+    public ResponseEntity<List<MonetaryTransactionDTO>> getAllMonetaryTransactionsForAccount(@PathVariable Long customerID) {
+        log.debug("REST request to get a page of MonetaryTransactions");
+        List<MonetaryTransactionDTO> page = monetaryTransactionService.findByAccount(customerID);
+        return ResponseEntity.ok(page);
+    }
+
+    /**
+     * {@code GET  /monetary-transactions} : get all the monetaryTransactions.
+     *
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of monetaryTransactions in body.
      */
