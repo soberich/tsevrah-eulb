@@ -37,6 +37,14 @@ I would gladly discuss details with reviewers.
 
 ##### Requirments and their respective implementations
 
+tests are located at 
+
+https://github.com/soberich/tsevrah-eulb/blob/master/account/src/test/java/com/example/account/web/rest/AccountApplicationResourceIT.java#L128-L231
+
+tests assigned with `@DispayName` matching requirments for convenience.
+
+
+
 to authenticate if you prefer to use plain curl/httpie
 ```shell
 curl \
