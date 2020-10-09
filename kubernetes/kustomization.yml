@@ -1,0 +1,19 @@
+commonLabels:
+  app.kubernetes.io/created-by: soberich
+
+resources:
+  # Individual apps
+  - gateway-k8s/gateway-deployment.yml
+  - gateway-k8s/gateway-service.yml
+  - gateway-k8s/gateway-postgresql.yml
+  - account-k8s/account-deployment.yml
+  - account-k8s/account-service.yml
+  - account-k8s/account-postgresql.yml
+  - transaction-k8s/transaction-deployment.yml
+  - transaction-k8s/transaction-service.yml
+  - transaction-k8s/transaction-postgresql.yml
+  # FIXME: we leave service discovery eureka/consul for the purpose of this showcase, though they can be substituted with k8s fully
+  - registry-k8s/jhipster-registry.yml
+  - registry-k8s/application-configmap.yml
+
+patchesJson6902:
